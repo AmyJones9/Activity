@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>每日活动倒计时页面</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      background-color: #00bcd4;
+      color: white;
+    }
+
+    .content {
+      padding: 2rem;
+      height: 2000px; /* 模拟长页面 */
+    }
+
+    .floating-clock {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      background: #ff9800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+    }
+
+    .action-button {
+      display: block;
+      width: 300px;
+      margin: 4rem auto;
+      padding: 1rem;
+      font-size: 1.2rem;
+      background-color: #9e9e9e;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: not-allowed;
+      transition: background-color 0.3s ease;
+    }
+
+    .action-button.active {
+      background-color: #4caf50;
+      cursor: pointer;
+    }
+
+    iframe {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SAA专属活动</h1>
+    <p>浏览页面并等待倒计时结束后可点击进入</p>
+  </header>
+
+  <div class="floating-clock" id="countdown">60</div>
+
+  <div class="content">
+    <p>请滑动到底部查看完整活动内容……（模拟长内容）</p>
+  </div>
+
+  <button id="enterBtn" class="action-button" disabled>进入活动页面</button>
+
+  <iframe id="targetFrame" srcdoc="<body style='display:flex;flex-direction:column;justify-content:center;align-items:center;'>
+  <h2>🎉 欢迎进入活动页</h2>
+  <button onclick='window.top.closeIframe()' style='margin-top:2rem;padding:0.5rem1rem;'>返回</button>
+</body>">
+</iframe>
+
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const enterBtn = document.getElementById('enterBtn');
+    const targetFrame = document.getElementById('targetFrame');
+    const countdownSeconds = 60; // 设置倒计时时间
+    let timeLeft = countdownSeconds;
+    let countdownFinished = false;
+    let scrolledToBottom = false;
+
+    // 限制每IP每天只能点击一次（使用localStorage模拟）
+    const todayKey = 'entered_' + new Date().toISOString().split('T')[0];
+    if (localStorage.getItem(todayKey)) {
+      enterBtn.textContent = '今日已进入';
+      enterBtn.style.backgroundColor = '#ccc';
+      enterBtn.disabled = true;
+    }
+
+    // 倒计时逻辑
+    const interval = setInterval(() => {
+      timeLeft--;
+      countdownEl.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        countdownEl.textContent = '✅';
+        countdownFinished = true;
+        activateButton();
+      }
+    }, 1000);
+
+    // 监听滚动判断是否到底部
+    window.addEventListener('scroll', () => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        scrolledToBottom = true;
+        activateButton();
+      }
+    });
+
+    function activateButton() {
+      if (countdownFinished && scrolledToBottom && !localStorage.getItem(todayKey)) {
+        enterBtn.classList.add('active');
+        enterBtn.disabled = false;
+        enterBtn.addEventListener('click', () => {
+          targetFrame.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+          localStorage.setItem(todayKey, 'true');
+        });
+      }
+    }
+
+    // 提供给 iframe 的关闭方法
+    window.closeIframe = function() {
+      targetFrame.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  </script>
+</body>
+</html>
