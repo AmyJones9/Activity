@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>兑换码页面</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 2rem;
+    }
+
+    .code-box {
+      background: #fff;
+      padding: 1.5rem;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      white-space: pre-wrap;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 兑换码领取页面</h1>
+  <div class="code-box" id="code1">活动兑换码: *****</div>
+  <div class="code-box" id="code2">电视台链接: https://tv.example.com\n兑换码: *****</div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAuthorized = urlParams.get('authorized');
+
+    if (isAuthorized === 'true') {
+      // 显示真实兑换码
+      document.getElementById('code1').textContent = "活动兑换码: 42D1EE48";
+      document.getElementById('code2').textContent = "电视台链接: https://tv.example.com\n兑换码: TV-5678";
+    }
+  </script>
+</body>
+</html>
