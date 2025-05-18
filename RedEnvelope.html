@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>红包雨活动</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       overflow: hidden;
       background-color: black;
     }
 
     .red-envelope {
       position: absolute;
-      width: 60px;
-      height: 60px;
       background-image: url('red.jpg');
       background-size: contain;
       background-repeat: no-repeat;
@@ -23,11 +22,13 @@
       animation-name: fall, spin;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
+      will-change: transform, top;
     }
 
     @keyframes fall {
-      0% { top: -100px; }
-      100% { top: 100vh; }
+      0% { top: -100px; opacity: 0; }
+      10% { opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
     }
 
     @keyframes spin {
@@ -35,26 +36,40 @@
       100% { transform: rotate(360deg); }
     }
 
-    #modal {
-      display: none;
+    #modal, #accountInput {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: white;
+      background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
-      z-index: 10;
+      z-index: 999;
     }
 
-    #modal button {
+    #modal {
+      display: none;
+    }
+
+    #accountInput input {
+      width: 200px;
+      padding: 5px;
+    }
+
+    #accountInput button {
       margin-top: 10px;
     }
   </style>
 </head>
 <body>
+
+<div id="accountInput">
+  <p>请输入你的工作账号 ID:</p>
+  <input type="text" id="accountField" placeholder="如：abc123">
+  <br>
+  <button onclick="startRain()">确认</button>
+</div>
 
 <div id="modal">
   <p id="message"></p>
@@ -62,43 +77,25 @@
 </div>
 
 <script>
-  const codes = ["ABC123", "DEF456", "GHI789", "JKL012", "MNO345"];
-  const storageKey = 'redEnvelopeClaimed';
-  const oneDay = 24 * 60 * 60 * 1000;
+  const SUPABASE_URL = "https://nucciijparpwlebiqduu.supabase.co"; // 替换成你的 Supabase 项目 URL
+  const SUPABASE_KEY = "process.env.SUPABASE_KEY";              // 替换成你的 Supabase anon key
 
-  function createRedEnvelope() {
-    const envelope = document.createElement('div');
-    envelope.className = 'red-envelope';
+  let userAccount = '';
+  const minMoney = 5, maxMoney = 50;
+  const maxEnvelopes = 20;
+  let hasClaimed = false;
 
-    // 随机位置与旋转角度
-    envelope.style.left = Math.random() * (window.innerWidth - 60) + 'px';
-    const initialRotation = Math.floor(Math.random() * 360);
-    envelope.style.transform = `rotate(${initialRotation}deg)`;
-
-    const fallDuration = Math.random() * 5 + 5;
-    const spinDuration = Math.random() * 3 + 2;
-
-    envelope.style.animationDuration = `${fallDuration}s, ${spinDuration}s`;
-
-    envelope.addEventListener('click', () => {
-      if (localStorage.getItem(storageKey)) {
-        const lastTime = new Date(parseInt(localStorage.getItem(storageKey)));
-        if (Date.now() - lastTime < oneDay) {
-          showModal('你已经抢过红包');
-          return;
-        }
+  async function checkAlreadyClaimed(account) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}`, {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
       }
-
-      const code = codes[Math.floor(Math.random() * codes.length)];
-      localStorage.setItem(storageKey, Date.now().toString());
-      showModal(`恭喜你，抢到了兑换码: ${code}`);
     });
-
-    document.body.appendChild(envelope);
-
-    setTimeout(() => {
-      envelope.remove();
-    }, fallDuration * 1000);
+    const data = await res.json();
+    return data.length > 0;
   }
 
   function showModal(message) {
@@ -110,7 +107,81 @@
     document.getElementById('modal').style.display = 'none';
   }
 
-  setInterval(createRedEnvelope, 400);
+  async function startRain() {
+    const input = document.getElementById('accountField');
+    if (!input.value.trim()) {
+      alert('请输入账号');
+      return;
+    }
+    userAccount = input.value.trim();
+    const claimed = await checkAlreadyClaimed(userAccount);
+    if (claimed) {
+      hasClaimed = true;
+      showModal('你已经领取过红包啦！');
+      return;
+    }
+    document.getElementById('accountInput').style.display = 'none';
+    launchRedEnvelopes();
+  }
+
+  function saveToSupabase(account, amount) {
+    fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`
+      },
+      body: JSON.stringify([{ account: account, amount: amount }])
+    }).catch(err => {
+      console.error("保存失败:", err);
+    });
+  }
+
+  function createRedEnvelope() {
+    if (document.querySelectorAll('.red-envelope').length >= maxEnvelopes) return;
+
+    const envelope = document.createElement('div');
+    envelope.className = 'red-envelope';
+
+    const size = 40 + Math.random() * 40;
+    envelope.style.width = `${size}px`;
+    envelope.style.height = `${size}px`;
+
+    const left = Math.random() * (window.innerWidth - size);
+    envelope.style.left = `${left}px`;
+
+    const fallDuration = Math.random() * 2 + 3;
+    const spinDuration = Math.random() * 2 + 2;
+    envelope.style.animationDuration = `${fallDuration}s, ${spinDuration}s`;
+
+    envelope.addEventListener('click', () => {
+      if (hasClaimed) {
+        showModal('你已经领取过红包啦！');
+        return;
+      }
+
+      const amount = Math.floor(Math.random() * (maxMoney - minMoney + 1)) + minMoney;
+      hasClaimed = true;
+      showModal(`恭喜你获得奖金 ¥${amount}`);
+      saveToSupabase(userAccount, amount);
+      envelope.remove();
+    });
+
+    document.body.appendChild(envelope);
+
+    setTimeout(() => {
+      envelope.remove();
+    }, fallDuration * 1000);
+  }
+
+  function launchRedEnvelopes() {
+    function loop() {
+      createRedEnvelope();
+      setTimeout(() => requestAnimationFrame(loop), 400 + Math.random() * 400);
+    }
+    loop();
+  }
 </script>
 
 </body>
