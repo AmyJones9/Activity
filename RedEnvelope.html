@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>红包雨活动</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+    }
+
+    .red-envelope {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background-image: url('red.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+      animation-name: fall, spin;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes fall {
+      0% { top: -100px; }
+      100% { top: 100vh; }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 10;
+    }
+
+    #modal button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="modal">
+  <p id="message"></p>
+  <button onclick="closeModal()">关闭</button>
+</div>
+
+<script>
+  const codes = ["ABC123", "DEF456", "GHI789", "JKL012", "MNO345"];
+  const storageKey = 'redEnvelopeClaimed';
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  function createRedEnvelope() {
+    const envelope = document.createElement('div');
+    envelope.className = 'red-envelope';
+
+    // 随机位置与旋转角度
+    envelope.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+    const initialRotation = Math.floor(Math.random() * 360);
+    envelope.style.transform = `rotate(${initialRotation}deg)`;
+
+    const fallDuration = Math.random() * 5 + 5;
+    const spinDuration = Math.random() * 3 + 2;
+
+    envelope.style.animationDuration = `${fallDuration}s, ${spinDuration}s`;
+
+    envelope.addEventListener('click', () => {
+      if (localStorage.getItem(storageKey)) {
+        const lastTime = new Date(parseInt(localStorage.getItem(storageKey)));
+        if (Date.now() - lastTime < oneDay) {
+          showModal('你已经抢过红包');
+          return;
+        }
+      }
+
+      const code = codes[Math.floor(Math.random() * codes.length)];
+      localStorage.setItem(storageKey, Date.now().toString());
+      showModal(`恭喜你，抢到了兑换码: ${code}`);
+    });
+
+    document.body.appendChild(envelope);
+
+    setTimeout(() => {
+      envelope.remove();
+    }, fallDuration * 1000);
+  }
+
+  function showModal(message) {
+    document.getElementById('message').innerText = message;
+    document.getElementById('modal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  setInterval(createRedEnvelope, 400);
+</script>
+
+</body>
+</html>
