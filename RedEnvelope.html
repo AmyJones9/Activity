@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>红包雨活动</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       margin: 0;
@@ -64,6 +64,7 @@
 </head>
 <body>
 
+<!-- 输入账号 -->
 <div id="accountInput">
   <p>请输入你的工作账号 ID:</p>
   <input type="text" id="accountField" placeholder="如：abc123">
@@ -71,22 +72,29 @@
   <button onclick="startRain()">确认</button>
 </div>
 
+<!-- 弹窗 -->
 <div id="modal">
   <p id="message"></p>
   <button onclick="closeModal()">关闭</button>
 </div>
 
 <script>
-  const SUPABASE_URL = "https://nucciijparpwlebiqduu.supabase.co"; // 替换成你的 Supabase 项目 URL
-  const SUPABASE_KEY = "process.env.SUPABASE_KEY";              // 替换成你的 Supabase anon key
+  // ✅ 替换为你的 Supabase 项目信息
+  const SUPABASE_URL = "https://nucciijparpwlebiqduu.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51Y2NpaWpwYXJwd2xlYmlxZHV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NzU4MTcsImV4cCI6MjA2MzE1MTgxN30.pEXww3OZdggOCFc09hW4JCwF1N7iJQMWEddmBH4jTsk";
 
   let userAccount = '';
-  const minMoney = 5, maxMoney = 50;
+  const minMoney = 4.0, maxMoney = 10.0;
   const maxEnvelopes = 20;
   let hasClaimed = false;
 
-  async function checkAlreadyClaimed(account) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}`, {
+  function getTodayDateStr() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  async function checkAlreadyClaimedToday(account) {
+    const today = getTodayDateStr();
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&date=eq.${today}`, {
       method: "GET",
       headers: {
         "apikey": SUPABASE_KEY,
@@ -114,17 +122,20 @@
       return;
     }
     userAccount = input.value.trim();
-    const claimed = await checkAlreadyClaimed(userAccount);
+
+    const claimed = await checkAlreadyClaimedToday(userAccount);
     if (claimed) {
       hasClaimed = true;
-      showModal('你已经领取过红包啦！');
+      showModal('你今天已经领取过红包啦！');
       return;
     }
+
     document.getElementById('accountInput').style.display = 'none';
     launchRedEnvelopes();
   }
 
   function saveToSupabase(account, amount) {
+    const today = getTodayDateStr();
     fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
       method: "POST",
       headers: {
@@ -132,7 +143,7 @@
         "apikey": SUPABASE_KEY,
         "Authorization": `Bearer ${SUPABASE_KEY}`
       },
-      body: JSON.stringify([{ account: account, amount: amount }])
+      body: JSON.stringify([{ account: account, amount: amount, date: today }])
     }).catch(err => {
       console.error("保存失败:", err);
     });
@@ -157,11 +168,11 @@
 
     envelope.addEventListener('click', () => {
       if (hasClaimed) {
-        showModal('你已经领取过红包啦！');
+        showModal('你今天已经领取过红包啦！');
         return;
       }
 
-      const amount = Math.floor(Math.random() * (maxMoney - minMoney + 1)) + minMoney;
+      const amount = parseFloat((Math.random() * (maxMoney - minMoney) + minMoney).toFixed(1));
       hasClaimed = true;
       showModal(`恭喜你获得奖金 ¥${amount}`);
       saveToSupabase(userAccount, amount);
@@ -169,10 +180,7 @@
     });
 
     document.body.appendChild(envelope);
-
-    setTimeout(() => {
-      envelope.remove();
-    }, fallDuration * 1000);
+    setTimeout(() => envelope.remove(), fallDuration * 1000);
   }
 
   function launchRedEnvelopes() {
