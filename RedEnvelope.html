@@ -134,20 +134,40 @@
     launchRedEnvelopes();
   }
 
-  function saveToSupabase(account, amount) {
-    const today = getTodayDateStr();
-    fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${SUPABASE_KEY}`
-      },
-      body: JSON.stringify([{ account: account, amount: amount, date: today }])
-    }).catch(err => {
-      console.error("保存失败:", err);
-    });
-  }
+ function getTodayDateString() {
+  const today = new Date();
+  return today.toISOString().split('T')[0];  // 👈 格式："2025-05-20"
+}
+
+function saveToSupabase(account, amount) {
+  const payload = {
+    account,
+    amount,
+    date: getTodayDateString()
+  };
+
+  fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      Prefer: "return=representation"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(async res => {
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`保存失败: ${errorText}`);
+    }
+    console.log("✅ 数据保存成功");
+  })
+  .catch(err => {
+    console.error("❌ 保存失败:", err);
+    showModal("系统错误，红包保存失败，请截图联系客服");
+  });
+}
 
   function createRedEnvelope() {
     if (document.querySelectorAll('.red-envelope').length >= maxEnvelopes) return;
