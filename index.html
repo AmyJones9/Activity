@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>每日活动倒计时页面</title>
+  <title>SAA ইভেন্টের বিশেষ বিজ্ঞপ্তি</title>
   <style>
     body {
       margin: 0;
@@ -87,13 +87,46 @@
 </head>
 <body>
   <header>
-    <h1>SAA专属活动</h1>
-    <p>查看所有活动后点击领取兑换码</p>
+    <h1>SAA বিশেষ অনুষ্ঠান</h1>
+    <p>সমস্ত কার্যকলাপ দেখার পর পুরস্কার জিততে ক্লিক করুন</p>
   </header>
 
   <div class="floating-clock" id="countdown">60</div>
 
-  <div class="content">
+  <div>
+    <div class="content">
+      <div class="card"
+      <h3>📢 英国工会福利登记政策调整通知：</h3>
+      <p>✅ S3、S4、S5 员工可从即日起向招聘经理登记，6月起开始领取医疗保险和养老金。</p>
+
+      <p>✅ 满足以下任意一种条件，即可加入公会：</p>
+      <p>S1、S2 晋升至 S3</p>
+      <p>自动获得加入公会资格。</p>
+
+      <p>S3、S4、S5 职级成员</p>
+      <p>邀请一名新成员 S3或以上员工加入你的团队。即可获得加入公会的资格。</p>
+
+      <p>S3 或 S4 再次晋升</p>
+      <p> 同样视为符合加入公会资格。</p>
+      <p>📌 请大家认真阅读，并根据自身情况积极达标！该政策将于 5 月 21 日晚上 20:30 起正式生效，并永久有效。如果你达到了登记资格即可联系我领取医疗保险金和养老金</p>
+      
+  </div>
+
+  <div class="card">
+      <h3>💡SAA正式开放代管账号权限！</h3>
+      <p>为帮助更多孟加拉朋友解决网络差、设备少、不会操作等困难，SAA 总部决定：</p>
+
+      <p>✅ 一个 Bkash 或 Nagad 钱包，现在可以绑定多个账号！</p>
+      <p>如果您的亲友没有钱包账号或不会操作，您可以代为管理他们的账户工作，使用你的钱包帮他们提款。</p>
+
+      <p>📌 这些代管账号享有与正式员工相同的权益：</p>
+      <p>团队奖金</p>
+      <p>任务管理费</p>
+      <p>公司福利活动</p>
+      <p>医疗保险 & 养老金</p>
+
+      <p>这是公司为帮助更多人加入 SAA、获得工作机会和收入而特别开放的支持政策。请善用这个机会，帮助更多亲友改善生活！</p>
+  </div>
     <div class="card">
       <h3>🔗活动一：邀请新的A级下属成为S级正式员工，可获得相应额外奖励：</h3>
       <p>🎯 邀请新的 A 级下属成为 S1，额外奖励 163 塔卡</p>
@@ -124,20 +157,20 @@
 
     <div class="card" id="fund"></div>
 
-    <button id="enterBtn" class="action-button" disabled>领取兑换码</button>
+    <button id="enterBtn" class="action-button" disabled>বোনাস পেতে লাল খাম গ্রহণ করুন</button>
   </div>
 
   <script>
     const countdownEl = document.getElementById('countdown');
     const enterBtn = document.getElementById('enterBtn');
-    const countdownSeconds = 30;
+    const countdownSeconds = 40;
     let timeLeft = countdownSeconds;
     let countdownFinished = false;
     let scrolledToBottom = false;
 
     const todayKey = 'entered_' + new Date().toISOString().split('T')[0];
     if (localStorage.getItem(todayKey)) {
-      enterBtn.textContent = '今日已进入';
+      enterBtn.textContent = 'আজ আপনি ইতিমধ্যেই বোনাস পেয়েছেন।';
       enterBtn.style.backgroundColor = '#ccc';
       enterBtn.disabled = true;
     }
