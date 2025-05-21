@@ -123,7 +123,7 @@
     }
     userAccount = input.value.trim();
 
-    const claimed = await checkAlreadyClaimedToday(userAccount);
+    const claimed = await checkAlreadyClaimed(userAccount);
     if (claimed) {
       hasClaimed = true;
       showModal('你今天已经领取过红包啦！');
