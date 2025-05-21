@@ -79,7 +79,6 @@
 </div>
 
 <script>
-  // ✅ 替换为你的 Supabase 项目信息
   const SUPABASE_URL = "https://nucciijparpwlebiqduu.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51Y2NpaWpwYXJwd2xlYmlxZHV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NzU4MTcsImV4cCI6MjA2MzE1MTgxN30.pEXww3OZdggOCFc09hW4JCwF1N7iJQMWEddmBH4jTsk";
 
@@ -88,24 +87,6 @@
   const maxEnvelopes = 20;
   let hasClaimed = false;
 
-  function getTodayDateStr() {
-    return new Date().toISOString().split('T')[0];
-  }
-
-  async function checkAlreadyClaimed(account) {
-  const today = new Date().toISOString().split('T')[0]; // 获取今天日期 YYYY-MM-DD
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&created_at=gte.${today}T00:00:00`, {
-    method: "GET",
-    headers: {
-      "apikey": SUPABASE_KEY,
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json"
-    }
-  });
-  const data = await res.json();
-  return data.length > 0;
-}
-  
   function showModal(message) {
     document.getElementById('message').innerText = message;
     document.getElementById('modal').style.display = 'block';
@@ -113,6 +94,50 @@
 
   function closeModal() {
     document.getElementById('modal').style.display = 'none';
+  }
+
+  async function checkAlreadyClaimed(account) {
+    const today = new Date().toISOString().split('T')[0];
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&created_at=gte.${today}T00:00:00`, {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await res.json();
+    return data.length > 0;
+  }
+
+  async function saveToSupabase(account, amount) {
+    const payload = {
+      account,
+      amount
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Prefer: "return=representation"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`保存失败: ${errorText}`);
+      }
+
+      console.log("✅ 数据保存成功");
+    } catch (err) {
+      console.error("❌ 保存失败:", err);
+      showModal("系统错误，红包保存失败，请截图联系客服");
+    }
   }
 
   async function startRain() {
@@ -133,41 +158,6 @@
     document.getElementById('accountInput').style.display = 'none';
     launchRedEnvelopes();
   }
-
- function getTodayDateString() {
-  const today = new Date();
-  return today.toISOString().split('T')[0];  // 👈 格式："2025-05-20"
-}
-
-function saveToSupabase(account, amount) {
-  const payload = {
-    account,
-    amount,
-    date: getTodayDateString()
-  };
-
-  fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      Prefer: "return=representation"
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(async res => {
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`保存失败: ${errorText}`);
-    }
-    console.log("✅ 数据保存成功");
-  })
-  .catch(err => {
-    console.error("❌ 保存失败:", err);
-    showModal("系统错误，红包保存失败，请截图联系客服");
-  });
-}
 
   function createRedEnvelope() {
     if (document.querySelectorAll('.red-envelope').length >= maxEnvelopes) return;
