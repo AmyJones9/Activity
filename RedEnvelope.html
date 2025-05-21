@@ -92,20 +92,18 @@
     return new Date().toISOString().split('T')[0];
   }
 
-  async function checkAlreadyClaimedToday(account) {
-    const today = getTodayDateStr();
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&date=eq.${today}`, {
-      method: "GET",
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await res.json();
-    return data.length > 0;
-  }
-
+  async function checkAlreadyClaimed(account) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}`, {
+    method: "GET",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json"
+    }
+  });
+  const data = await res.json();
+  return data.length > 0;
+}
   function showModal(message) {
     document.getElementById('message').innerText = message;
     document.getElementById('modal').style.display = 'block';
