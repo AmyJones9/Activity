@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>红包雨活动</title>
+  <title>লাল খাম</title>
   <style>
     html, body {
       margin: 0;
@@ -66,16 +66,16 @@
 
 <!-- 输入账号 -->
 <div id="accountInput">
-  <p>请输入你的工作账号 ID:</p>
-  <input type="text" id="accountField" placeholder="如：1234567890">
+  <p>আপনার কর্মস্থলের অ্যাকাউন্ট আইডি লিখুন:</p>
+  <input type="text" id="accountField" placeholder="উদাহরণস্বরূপ：1234567890">
   <br>
-  <button onclick="startRain()">确认</button>
+  <button onclick="startRain()">নিশ্চিত করা</button>
 </div>
 
 <!-- 弹窗 -->
 <div id="modal">
   <p id="message"></p>
-  <button onclick="closeModal()">关闭</button>
+  <button onclick="closeModal()">বন্ধ</button>
 </div>
 
 <script>
@@ -83,7 +83,7 @@
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51Y2NpaWpwYXJwd2xlYmlxZHV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NzU4MTcsImV4cCI6MjA2MzE1MTgxN30.pEXww3OZdggOCFc09hW4JCwF1N7iJQMWEddmBH4jTsk";
 
   let userAccount = '';
-  const minMoney = 4.0, maxMoney = 10.0;
+  const minMoney = 4.0, maxMoney = 8.0;
   const maxEnvelopes = 20;
   let hasClaimed = false;
 
@@ -130,20 +130,20 @@
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(`保存失败: ${errorText}`);
+        throw new Error(`সংরক্ষণ ব্যর্থ হয়েছে: ${errorText}`);
       }
 
-      console.log("✅ 数据保存成功");
+      console.log("✅");
     } catch (err) {
-      console.error("❌ 保存失败:", err);
-      showModal("系统错误，红包保存失败，请截图联系客服");
+      console.error("❌:", err);
+      showModal("error");
     }
   }
 
   async function startRain() {
     const input = document.getElementById('accountField');
     if (!input.value.trim()) {
-      alert('请输入账号');
+      alert('অনুগ্রহ করে আপনার অ্যাকাউন্ট নম্বর লিখুন৷');
       return;
     }
     userAccount = input.value.trim();
@@ -151,7 +151,7 @@
     const claimed = await checkAlreadyClaimed(userAccount);
     if (claimed) {
       hasClaimed = true;
-      showModal('你今天已经领取过红包啦！');
+      showModal('আপনি আজ লাল খাম পেয়েছেন!');
       return;
     }
 
@@ -178,13 +178,13 @@
 
     envelope.addEventListener('click', () => {
       if (hasClaimed) {
-        showModal('你今天已经领取过红包啦！');
+        showModal('তুমি আজ লাল খামটি পেয়েছো!');
         return;
       }
 
       const amount = parseFloat((Math.random() * (maxMoney - minMoney) + minMoney).toFixed(1));
       hasClaimed = true;
-      showModal(`恭喜你获得奖金 ¥${amount}`);
+      showModal(`পুরস্কার জেতার জন্য অভিনন্দন। ¥${amount}`);
       saveToSupabase(userAccount, amount);
       envelope.remove();
     });
