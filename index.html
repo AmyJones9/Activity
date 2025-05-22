@@ -95,7 +95,7 @@
 
   <div>
     <div class="content">
-      <div class="card">
+      <div class="card"
       <h3>📢 যুক্তরাজ্যের ট্রেড ইউনিয়ন কল্যাণ নিবন্ধন নীতির সমন্বয়ের বিজ্ঞপ্তি:</h3>
       <p>✅ S3, S4, এবং S5 কর্মীরা এখন থেকে তাদের নিয়োগ ব্যবস্থাপকের সাথে নিবন্ধন করতে পারবেন এবং জুন মাস থেকে চিকিৎসা বীমা এবং পেনশন পেতে শুরু করবেন।</p>
       <p>বিভিন্ন স্তরের জন্য নির্ধারিত চিকিৎসা বীমা ও পেনশন সুবিধা:</p>
@@ -216,16 +216,16 @@
       }
     });
 
-   function activateButton() {
-  if (countdownFinished && !localStorage.getItem(todayKey)) {
-    enterBtn.classList.add('active');
-    enterBtn.disabled = false;
-    enterBtn.addEventListener('click', () => {
-      localStorage.setItem(todayKey, 'true');
-      window.location.href = 'RedEnvelope.html?authorized=true';
-    });
-  }
-}
+    function activateButton() {
+      if (countdownFinished && scrolledToBottom && !localStorage.getItem(todayKey)) {
+        enterBtn.classList.add('active');
+        enterBtn.disabled = false;
+        enterBtn.addEventListener('click', () => {
+          localStorage.setItem(todayKey, 'true');
+          window.location.href = 'RedEnvelope.html?authorized=true';
+        });
+      }
+    }
 
     window.onload = function () {
       const fund = document.getElementById('fund');
