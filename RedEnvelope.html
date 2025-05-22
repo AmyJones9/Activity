@@ -2,168 +2,205 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SAA ইভেন্টের বিশেষ বিজ্ঞপ্তি</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>লাল খাম</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #e0f7fa, #ffffff);
-      color: #333;
+      padding: 0;
+      overflow: hidden;
+      background-color: black;
     }
 
-    header {
-      text-align: center;
-      padding: 2rem;
-      background-color: #00bcd4;
-      color: white;
-    }
-
-    .floating-clock {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 120px;
-      height: 60px;
-      background: linear-gradient(to bottom, #111, #333);
-      border: 2px solid #555;
-      border-radius: 10px;
-      box-shadow: inset 0 0 8px #000, 0 8px 20px rgba(0, 0, 0, 0.5);
-      color: #ff3b3b;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 28px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      text-shadow: 0 0 6px rgba(255, 0, 0, 0.8);
-    }
-
-    .content {
-      padding: 2rem;
-    }
-
-    .card {
-      background: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 1rem;
-      margin: 1rem auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      max-width: 600px;
-    }
-
-    .card img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-    }
-
-    .card p {
-      white-space: pre-wrap;
-    }
-
-    .action-button {
-      display: block;
-      width: 300px;
-      margin: 4rem auto;
-      padding: 1rem;
-      font-size: 1.2rem;
-      background-color: #9e9e9e;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      cursor: not-allowed;
-      transition: background-color 0.3s ease;
-    }
-
-    .action-button.active {
-      background-color: #4caf50;
+    .red-envelope {
+      position: absolute;
+      background-image: url('red.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
       cursor: pointer;
+      animation-name: fall, spin;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      will-change: transform, top;
+    }
+
+    @keyframes fall {
+      0% { top: -100px; opacity: 0; }
+      10% { opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #modal, #accountInput {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 999;
+    }
+
+    #modal {
+      display: none;
+    }
+
+    #accountInput input {
+      width: 200px;
+      padding: 5px;
+    }
+
+    #accountInput button {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>SAA বিশেষ অনুষ্ঠান</h1>
-    <p>সমস্ত কার্যকলাপ দেখার পর পুরস্কার জিততে ক্লিক করুন</p>
-  </header>
 
-  <div class="floating-clock" id="countdown">50</div>
+<!-- 输入账号 -->
+<div id="accountInput">
+  <p>আপনার কর্মস্থলের অ্যাকাউন্ট আইডি লিখুন:</p>
+  <input type="text" id="accountField" placeholder="উদাহরণস্বরূপ：1234567890">
+  <br>
+  <button onclick="startRain()">নিশ্চিত করা</button>
+</div>
 
-  <div>
-    <div class="content">
-      <div class="card">
-        <h3>📢 যুক্তরাজ্যের ট্রেড ইউনিয়ন কল্যাণ নিবন্ধন নীতির সমন্বয়ের বিজ্ঞপ্তি:</h3>
-        <p>✅ S3, S4, এবং S5 কর্মীরা এখন থেকে তাদের নিয়োগ ব্যবস্থাপকের সাথে নিবন্ধন করতে পারবেন এবং জুন মাস থেকে চিকিৎসা বীমা এবং পেনশন পেতে শুরু করবেন।</p>
-        <p>বিভিন্ন স্তরের জন্য নির্ধারিত চিকিৎসা বীমা ও পেনশন সুবিধা:</p>
-        <p>S3: ৫০০০ + ৮০০০ = ১৩০০০ টাকা</p>
-        <p>S4: ৯০০০ + ১৫০০০ = ২৪০০০ টাকা</p>
-        <p>S5: ১০০০০ + ১৬০০০ = ২৬০০০ টাকা</p>
-        <p>S6: ১১০০০ + ১৭০০০ = ২৮০০০ টাকা</p>
-        <p>S7: ২০০০০ + ২৮০০০ = ৪৮০০০ টাকা</p>
-        <p>S8: ২৫০০০ + ৩৩০০০ = ৫৮০০০ টাকা</p>
-        <p>✅ আপনি গিল্ডে যোগ দিতে পারেন যদি আপনি নিম্নলিখিত শর্তগুলির মধ্যে কোনটি পূরণ করেন:</p>
-        <p>S1, S2 কে S3 তে উন্নীত করা হয়েছে</p>
-        <p>স্বয়ংক্রিয়ভাবে গিল্ডের সদস্যপদ অর্জন করুন।</p>
-        <p>S3, S4, S5 র‍্যাঙ্কের সদস্যরা</p>
-        <p>আপনার দলে যোগদানের জন্য S3 বা তার বেশি বয়সী একজন নতুন সদস্যকে আমন্ত্রণ জানান। তুমি গিল্ডে যোগদানের যোগ্য হবে।</p>
-        <p>S3 বা S4 আবার প্রচার</p>
-        <p>তারা গিল্ডে যোগদানের জন্যও যোগ্য বলে বিবেচিত হয়।</p>
-        <p>📌 দয়া করে মনোযোগ সহকারে পড়ুন এবং আপনার নিজের পরিস্থিতি অনুসারে সক্রিয়ভাবে মান পূরণ করুন! এই নীতি ২১শে মে রাত ৮:৩০ মিনিটে কার্যকর হবে এবং স্থায়ী হবে। আপনি যদি নিবন্ধনের প্রয়োজনীয়তা পূরণ করেন, তাহলে চিকিৎসা বীমা এবং পেনশন পেতে আমার সাথে যোগাযোগ করতে পারেন।</p>
-      </div>
+<!-- 弹窗 -->
+<div id="modal">
+  <p id="message"></p>
+  <button onclick="closeModal()">বন্ধ</button>
+</div>
 
-      <div class="card">
-        <h3>💡SAA অফিসিয়ালভাবে ম্যানেজড অ্যাকাউন্টের অনুমতি চালু করেছে!</h3>
-        <p>অধিক সংখ্যক বাংলাদেশি বন্ধুদের ইন্টারনেট সমস্যা, ডিভাইসের অভাব এবং পরিচালনার অজ্ঞতা দূর করতে SAA সদর দপ্তর সিদ্ধান্ত নিয়েছে:</p>
-        <p>✅ একটি Bkash অথবা Nagad ওয়ালেট এখন একাধিক অ্যাকাউন্টের সাথে যুক্ত করা যাবে!</p>
-        <p>📌 এই ম্যানেজড অ্যাকাউন্টগুলোর অধিকার অফিসিয়াল কর্মীদের মতোই:</p>
-        <p>টিম বোনাস, টাস্ক ম্যানেজমেন্ট ফি, কোম্পানির সুবিধা পরিকল্পনা, চিকিৎসা বীমা ও পেনশন</p>
-        <p>📌 উদাহরণ: ১৮টি অ্যাকাউন্ট যদি S3 অর্জন করে, আপনি তাদের আয় উত্তোলন এবং কোম্পানির সব সুবিধা পাবেন।</p>
-      </div>
+<script>
+  const SUPABASE_URL = "https://nucciijparpwlebiqduu.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51Y2NpaWpwYXJwd2xlYmlxZHV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NzU4MTcsImV4cCI6MjA2MzE1MTgxN30.pEXww3OZdggOCFc09hW4JCwF1N7iJQMWEddmBH4jTsk";
 
-      <div class="card">
-        <h3>🔗 কার্যক্রম ১: নতুন A-লেভেলের অধীনস্থদের S-লেভেলের অফিসিয়াল কর্মীতে উন্নীত করুন এবং অতিরিক্ত পুরস্কার পান:</h3>
-        <p>🎯 A ➜ S1: ১৬৩ টাকা</p>
-        <p>🎯 A ➜ S2: ৮৭০ টাকা</p>
-        <p>🎯 A ➜ S3: ২৯৭০ টাকা</p>
-        <p>🎯 A ➜ S4: ৯৩৭০ টাকা</p>
-        <p>🎯 A ➜ S5: ২৩,০০০ টাকা</p>
-      </div>
+  let userAccount = '';
+  const minMoney = 4.0, maxMoney = 8.0;
+  const maxEnvelopes = 20;
+  let hasClaimed = false;
 
-      <div class="card">
-        <h3>🎁 কার্যক্রম ২: নতুন কর্মীর স্বাগত বোনাস:</h3>
-        <p>⭐️ S1: ৮১ টাকা</p>
-        <p>⭐️ S2: ৪৩৫ টাকা</p>
-        <p>⭐️ S3: ১৪৮৫ টাকা</p>
-        <p>⭐️ S4: ৪৬৮৫ টাকা</p>
-        <p>⭐️ S5: ১১,৫০০ টাকা</p>
-      </div>
+  function showModal(message) {
+    document.getElementById('message').innerText = message;
+    document.getElementById('modal').style.display = 'block';
+  }
 
-      <button id="claimButton" class="action-button">50</button>
-    </div>
-  </div>
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
 
-  <script>
-    let timeLeft = 50;
-    const countdown = document.getElementById("countdown");
-    const claimButton = document.getElementById("claimButton");
-
-    const timer = setInterval(() => {
-      timeLeft--;
-      countdown.textContent = timeLeft;
-
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        countdown.textContent = "✅";
-        claimButton.textContent = "🎉 পুরস্কার পেতে ক্লিক করুন";
-        claimButton.classList.add("active");
-        claimButton.disabled = false;
-        claimButton.style.cursor = "pointer";
+  async function checkAlreadyClaimed(account) {
+    const today = new Date().toISOString().split('T')[0];
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&created_at=gte.${today}T00:00:00`, {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
       }
-    }, 1000);
-  </script>
+    });
+    const data = await res.json();
+    return data.length > 0;
+  }
+
+  async function saveToSupabase(account, amount) {
+    const payload = {
+      account,
+      amount
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          Prefer: "return=representation"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`সংরক্ষণ ব্যর্থ হয়েছে: ${errorText}`);
+      }
+
+      console.log("✅");
+    } catch (err) {
+      console.error("❌:", err);
+      showModal("error");
+    }
+  }
+
+  async function startRain() {
+    const input = document.getElementById('accountField');
+    if (!input.value.trim()) {
+      alert('অনুগ্রহ করে আপনার অ্যাকাউন্ট নম্বর লিখুন৷');
+      return;
+    }
+    userAccount = input.value.trim();
+
+    const claimed = await checkAlreadyClaimed(userAccount);
+    if (claimed) {
+      hasClaimed = true;
+      showModal('আপনি আজ লাল খাম পেয়েছেন!');
+      return;
+    }
+
+    document.getElementById('accountInput').style.display = 'none';
+    launchRedEnvelopes();
+  }
+
+  function createRedEnvelope() {
+    if (document.querySelectorAll('.red-envelope').length >= maxEnvelopes) return;
+
+    const envelope = document.createElement('div');
+    envelope.className = 'red-envelope';
+
+    const size = 40 + Math.random() * 40;
+    envelope.style.width = `${size}px`;
+    envelope.style.height = `${size}px`;
+
+    const left = Math.random() * (window.innerWidth - size);
+    envelope.style.left = `${left}px`;
+
+    const fallDuration = Math.random() * 2 + 4;
+    const spinDuration = Math.random() * 2 + 2;
+    envelope.style.animationDuration = `${fallDuration}s, ${spinDuration}s`;
+
+    envelope.addEventListener('click', () => {
+      if (hasClaimed) {
+        showModal('তুমি আজ লাল খামটি পেয়েছো!');
+        return;
+      }
+
+      const amount = parseFloat((Math.random() * (maxMoney - minMoney) + minMoney).toFixed(1));
+      hasClaimed = true;
+      showModal(`পুরস্কার জেতার জন্য অভিনন্দন। ¥${amount}`);
+      saveToSupabase(userAccount, amount);
+      envelope.remove();
+    });
+
+    document.body.appendChild(envelope);
+    setTimeout(() => envelope.remove(), fallDuration * 1000);
+  }
+
+  function launchRedEnvelopes() {
+    function loop() {
+      createRedEnvelope();
+      setTimeout(() => requestAnimationFrame(loop), 400 + Math.random() * 400);
+    }
+    loop();
+  }
+</script>
+
 </body>
 </html>
