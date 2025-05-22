@@ -98,11 +98,11 @@
 
   async function checkAlreadyClaimed(account) {
     const today = new Date().toISOString().split('T')[0];
-    const res = await fetch(${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&created_at=gte.${today}T00:00:00, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records?account=eq.${account}&created_at=gte.${today}T00:00:00`, {
       method: "GET",
       headers: {
         "apikey": SUPABASE_KEY,
-        "Authorization": Bearer ${SUPABASE_KEY},
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json"
       }
     });
@@ -117,12 +117,12 @@
     };
 
     try {
-      const res = await fetch(${SUPABASE_URL}/rest/v1/bonus_records, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/bonus_records`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_KEY,
-          Authorization: Bearer ${SUPABASE_KEY},
+          Authorization: `Bearer ${SUPABASE_KEY}`,
           Prefer: "return=representation"
         },
         body: JSON.stringify(payload)
@@ -130,7 +130,7 @@
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(সংরক্ষণ ব্যর্থ হয়েছে: ${errorText});
+        throw new Error(`সংরক্ষণ ব্যর্থ হয়েছে: ${errorText}`);
       }
 
       console.log("✅");
@@ -166,15 +166,15 @@
     envelope.className = 'red-envelope';
 
     const size = 40 + Math.random() * 40;
-    envelope.style.width = ${size}px;
-    envelope.style.height = ${size}px;
+    envelope.style.width = `${size}px`;
+    envelope.style.height = `${size}px`;
 
     const left = Math.random() * (window.innerWidth - size);
-    envelope.style.left = ${left}px;
+    envelope.style.left = `${left}px`;
 
     const fallDuration = Math.random() * 2 + 4;
     const spinDuration = Math.random() * 2 + 2;
-    envelope.style.animationDuration = ${fallDuration}s, ${spinDuration}s;
+    envelope.style.animationDuration = `${fallDuration}s, ${spinDuration}s`;
 
     envelope.addEventListener('click', () => {
       if (hasClaimed) {
@@ -184,7 +184,7 @@
 
       const amount = parseFloat((Math.random() * (maxMoney - minMoney) + minMoney).toFixed(1));
       hasClaimed = true;
-      showModal(পুরস্কার জেতার জন্য অভিনন্দন। ¥${amount});
+      showModal(`পুরস্কার জেতার জন্য অভিনন্দন। ¥${amount}`);
       saveToSupabase(userAccount, amount);
       envelope.remove();
     });
