@@ -216,16 +216,16 @@
       }
     });
 
-    function activateButton() {
-      if (countdownFinished && scrolledToBottom && !localStorage.getItem(todayKey)) {
-        enterBtn.classList.add('active');
-        enterBtn.disabled = false;
-        enterBtn.addEventListener('click', () => {
-          localStorage.setItem(todayKey, 'true');
-          window.location.href = 'RedEnvelope.html?authorized=true';
-        });
-      }
-    }
+   function activateButton() {
+  if (countdownFinished && !localStorage.getItem(todayKey)) {
+    enterBtn.classList.add('active');
+    enterBtn.disabled = false;
+    enterBtn.addEventListener('click', () => {
+      localStorage.setItem(todayKey, 'true');
+      window.location.href = 'RedEnvelope.html?authorized=true';
+    });
+  }
+}
 
     window.onload = function () {
       const fund = document.getElementById('fund');
